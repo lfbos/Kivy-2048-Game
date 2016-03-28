@@ -5,6 +5,12 @@ from kivy.uix.widget import Widget
 spacing = 15
 
 
+def all_cells():
+    for x in range(4):
+        for y in range(4):
+            yield (x, y)
+
+
 class Board(Widget):
     def __init__(self, **kwargs):
         super(Board, self).__init__(**kwargs)

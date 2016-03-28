@@ -14,9 +14,15 @@ def all_cells():
 
 
 class Board(Widget):
+    b = None
+
     def __init__(self, **kwargs):
         super(Board, self).__init__(**kwargs)
         self.resize()
+
+    def reset(self):
+        self.b = [[None for i in range(4)]
+                  for j in range(4)]
 
     def cell_pos(self, board_x, board_y):
         return (self.x + board_x * (self.cell_size[0] + spacing) + spacing,
@@ -35,12 +41,21 @@ class Board(Widget):
                     source='cell.png'
                 )
 
+    def valid_cell(self, board_x, board_y):
+        return (0 <= board_x <= 3 and 0 <= board_y <= 3)
+
+    def can_move(self, board_x, board_y):
+        return (self.valid_cell(board_x, board_y) and
+                self.b[board_x][board_y] is None)
+
     on_pos = resize
     on_size = resize
 
 
 class GameApp(App):
-    pass
+    def on_start(self):
+        board = self.root.ids.board
+        board.reset()
 
 
 if __name__ == '__main__':

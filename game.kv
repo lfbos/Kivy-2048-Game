@@ -1,0 +1,9 @@
+#:set padding 20
+
+FloatLayout:
+    Board:
+        id: board
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        size_hint: (None, None)
+        center: root.center
+        size: [min(root.width, root.height) - 2 * padding] * 2

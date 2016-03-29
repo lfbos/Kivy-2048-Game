@@ -132,6 +132,15 @@ class Board(Widget):
                 y += dir_y
                 self.b[x][y] = tile
 
+            if self.can_combine(x + dir_x, y + dir_y, tile.number):
+                self.b[x][y] = None
+                x += dir_x
+                y += dir_y
+                self.remove_widget(self.b[x][y])
+                self.b[x][y] = tile
+                tile.number *= 2
+                tile.update_colors()
+
             if x == board_x and y == board_y:
                 continue  # nothing has happened
 
@@ -142,6 +151,11 @@ class Board(Widget):
             )
 
             anim.start(tile)
+
+    def can_combine(self, board_x, board_y, number):
+        return (self.valid_cell(board_x, board_y) and
+                self.b[board_x][board_y] is not None and
+                self.b[board_x][board_y].number == number)
 
     on_pos = resize
     on_size = resize

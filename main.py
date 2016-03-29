@@ -58,6 +58,7 @@ def all_cells(flip_x=False, flip_y=False):
 
 class Board(Widget):
     b = None
+    moving = False
 
     def __init__(self, **kwargs):
         super(Board, self).__init__(**kwargs)
@@ -77,6 +78,8 @@ class Board(Widget):
                     size=self.cell_size)
         self.b[x][y] = tile
         self.add_widget(tile)
+
+        self.moving = False
 
     def valid_cell(self, board_x, board_y):
         return (0 <= board_x <= 3 and 0 <= board_y <= 3)
@@ -116,6 +119,8 @@ class Board(Widget):
                             size=self.cell_size)
 
     def move(self, dir_x, dir_y):
+        if self.moving:
+            return
 
         dir_x = int(dir_x)
         dir_y = int(dir_y)
@@ -149,6 +154,10 @@ class Board(Widget):
                 duration=0.25,
                 transition='linear'
             )
+
+            if not self.moving:
+                anim.on_complete = self.new_tile
+                self.moving = True
 
             anim.start(tile)
 

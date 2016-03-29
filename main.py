@@ -79,6 +79,9 @@ class Board(Widget):
         self.b[x][y] = tile
         self.add_widget(tile)
 
+        if len(empty_cells) == 1 and self.is_deadlocked():
+            print ('Game over (board is deadlocked)')
+
         self.moving = False
 
     def valid_cell(self, board_x, board_y):
@@ -144,6 +147,8 @@ class Board(Widget):
                 self.remove_widget(self.b[x][y])
                 self.b[x][y] = tile
                 tile.number *= 2
+                if (tile.number == 2048):
+                    print('You win the game')
                 tile.update_colors()
 
             if x == board_x and y == board_y:
@@ -160,6 +165,18 @@ class Board(Widget):
                 self.moving = True
 
             anim.start(tile)
+
+    def is_deadlocked(self):
+        for x, y in all_cells():
+            if self.b[x][y] is None:
+                return False  # Step 1
+
+            number = self.b[x][y].number
+            if self.can_combine(x + 1, y, number) or \
+                    self.can_combine(x, y + 1, number):
+                return False  # Step 2
+
+        return True  # Step 3
 
     def can_combine(self, board_x, board_y, number):
         return (self.valid_cell(board_x, board_y) and

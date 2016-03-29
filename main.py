@@ -1,10 +1,42 @@
 from kivy.app import App
 from kivy.graphics import BorderImage
 from kivy.graphics import Color
+from kivy.properties import ListProperty, NumericProperty
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 
 spacing = 15
+
+colors = (
+    'EEE4DA', 'EDE0C8', 'F2B179', 'F59563',
+    'F67C5F', 'F65E3B', 'EDCF72', 'EDCC61',
+    'EDC850', 'EDC53F', 'EDC22E'
+)
+
+tile_colors = {2 ** i: color for i, color in enumerate(colors, start=1)}
+
+
+class Tile(Widget):
+    font_size = NumericProperty(24)
+    number = NumericProperty(2)  # Text shown on the tile
+    color = ListProperty(get_color_from_hex(tile_colors[2]))
+    number_color = ListProperty(get_color_from_hex('776E65'))
+
+    def __init__(self, number=2, **kwargs):
+        super(Tile, self).__init__(**kwargs)
+        self.font_size = 0.5 * self.width
+        self.number = number
+        self.update_colors()
+
+    def update_colors(self):
+        self.color = get_color_from_hex(tile_colors[self.number])
+        if self.number > 4:
+            self.number_color = get_color_from_hex('F9F6F2')
+
+    def resize(self, pos, size):
+        self.pos = pos
+        self.size = size
+        self.font_size = 0.5 * self.width
 
 
 def all_cells():
@@ -39,6 +71,17 @@ class Board(Widget):
                     pos=self.cell_pos(board_x, board_y),
                     size=self.cell_size,
                     source='cell.png'
+                )
+
+        if not self.b:
+            return
+
+        for board_x, board_y in all_cells():
+            tile = self.b[board_x][board_y]
+            if tile:
+                tile.resize(
+                    pos=self.cell_pos(board_x, board_y),
+                    size=self.cell_size
                 )
 
     def valid_cell(self, board_x, board_y):

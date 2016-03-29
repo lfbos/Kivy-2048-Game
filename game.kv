@@ -1,5 +1,23 @@
 #:set padding 20
 
+<Tile>:
+    Canvas:
+        Color:
+            rgb: self.color
+
+        BorderImage:
+            pos: self.pos
+            size: self.size
+            source: 'cell.png'
+
+    Label:
+        pos: root.pos
+        size: root.size
+        bold: True
+        color: root.number_color
+        font_size: root.font_size
+        text: str(root.number)
+
 FloatLayout:
     Board:
         id: board
